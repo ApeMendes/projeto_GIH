@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda Médica - Versão Final</title>
+    <style>
+        :root {
+            --borda-cor: #e9ecef;
+            --cor-atraso-bg: #f8d7da;
+            --cor-atraso-border: #dc3545;
+            --cor-atraso-text: #721c24;
+            --cor-primaria: #007bff;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f8f9fa; margin: 0; overflow: hidden; }
+        .container { display: grid; grid-template-columns: 300px 1fr; height: 100vh; }
+        .sidebar { background-color: #ffffff; border-right: 1px solid var(--borda-cor); padding: 20px; display: flex; flex-direction: column; }
+        .sidebar-content { flex-grow: 1; overflow-y: auto; }
+        .sidebar h2 { font-size: 1.2em; margin-top: 0; }
+        .sidebar h3 { font-size: 0.95em; margin-top: 20px; border-bottom: 1px solid var(--borda-cor); padding-bottom: 5px; color: #6c757d; }
+        .sidebar ul { list-style: none; padding: 0; }
+        .sidebar li { padding: 8px 0; font-size: 0.9em; border-bottom: 1px solid #f1f3f5; }
+        .calendar-area { display: flex; flex-direction: column; padding: 20px; background-color: #fff; }
+        .calendar-controls { flex-shrink: 0; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-group button { padding: 8px 12px; font-size: 0.9em; border: 1px solid #ced4da; background-color: #ffffff; cursor: pointer; border-radius: 4px; }
+        .btn-group button.active { background-color: var(--cor-primaria); color: white; }
+        .calendar-wrapper { display: flex; flex-grow: 1; overflow: hidden; border: 1px solid var(--borda-cor); }
+        .timeline { flex-shrink: 0; width: 50px; display: flex; flex-direction: column; font-size: 0.75em; background-color: #f8f9fa; }
+        .hour-marker { flex-grow: 1; text-align: center; position: relative; top: -7px; /* CORREÇÃO DE ALINHAMENTO */ }
+        .calendar-grid { flex-grow: 1; display: grid; grid-template-rows: auto 1fr; position: relative; }
+        .calendar-header-wrapper { display: grid; border-bottom: 1px solid var(--borda-cor); background-color: #f8f9fa; }
+        .grid-header { text-align: center; padding: 10px; font-weight: 600; }
+        .calendar-body-wrapper { display: grid; position: relative; overflow-y: auto; }
+        .hour-lines-container { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; pointer-events: none; }
+        .hour-line { flex-grow: 1; border-top: 1px solid #f1f3f5; }
+        .grid-day-column { position: relative; border-right: 1px solid var(--borda-cor); }
+        .consulta { position: absolute; padding: 2px 6px; border-radius: 3px; font-size: 0.75em; overflow: hidden; border-left: 3px solid; cursor: pointer; z-index: 1; background: white; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .consulta strong { display: block; font-size: 1.1em; }
+        .consulta-Normal { background-color: #e7f5ff; border-color: #007bff; color: #0056b3; }
+        .consulta-Urgencia { background-color: #fff4e6; border-color: #fd7e14; color: #c95e00; }
+        .consulta-Planeamento-Familiar { background-color: #e6f8f0; border-color: #20c997; color: #0c6a4e; }
+        .consulta.com-atraso { background-color: var(--cor-atraso-bg) !important; border-color: var(--cor-atraso-border) !important; color: var(--cor-atraso-text) !important; }
+        .add-consulta-btn { position: absolute; top: 5px; right: 5px; width: 24px; height: 24px; background-color: #28a745; color: white; border: none; border-radius: 50%; font-size: 18px; line-height: 24px; text-align: center; cursor: pointer; z-index: 20; opacity: 0.6; transition: opacity 0.2s; }
+        .add-consulta-btn:hover { opacity: 1; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background-color: white; padding: 25px 30px; border-radius: 8px; width: 90%; max-width: 450px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .modal-content h2 { margin-top: 0; margin-bottom: 20px; font-size: 1.5em; }
+        .form-group, .info-group { margin-bottom: 15px; }
+        .info-label, label { display: block; margin-bottom: 5px; font-weight: 600; color: #555; font-size: 0.9em; }
+        input[type="text"], select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .checkbox-group { display: flex; gap: 20px; align-items: center; }
+        .checkbox-group label { font-weight: normal; }
+        .info-value { font-size: 1.1em; padding: 5px 0; }
+        .info-value.atraso { color: #dc3545; font-weight: bold; }
+        .modal-buttons { margin-top: 25px; display: flex; justify-content: flex-end; gap: 10px; }
+        .modal-buttons button { padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer; }
+        .btn-primary { background-color: var(--cor-primaria); color: white; }
+        .btn-danger { background-color: #dc3545; color: white; }
+        .btn-secondary { background-color: #6c757d; color: white; }
+        .hidden { display: none; }
+        .btn-add-staff { width: 100%; padding: 12px; margin-top: 20px; background-color: #f1f3f5; border: 1px dashed #ced4da; cursor: pointer; border-radius: 5px; color: #495057; transition: all 0.2s; }
+        .btn-add-staff:hover { background-color: #e9ecef; border-color: var(--cor-primaria); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-content" id="sidebarContent"></div>
+            <button class="btn-add-staff" id="addStaffBtn">Adicionar Profissional +</button>
+        </aside>
+        <main class="calendar-area">
+            <div class="calendar-controls">
+                <div class="btn-group">
+                    <button id="btnHoje">Hoje</button>
+                    <button id="btnDia" class="active">Dia</button>
+                    <button id="btnSemana">Semana</button>
+                </div>
+                <div class="btn-group" id="dayViewToggle">
+                    <button id="btnManha">Manhã</button>
+                    <button id="btnTarde">Tarde</button>
+                    <button id="btnDiaInteiro" class="active">Dia Inteiro</button>
+                </div>
+            </div>
+            <div class="calendar-wrapper">
+                <div class="timeline" id="timelineLeft"></div>
+                <div class="calendar-grid" id="calendarGrid">
+                    <div class="calendar-header-wrapper" id="calendarHeader"></div>
+                    <div class="calendar-body-wrapper" id="calendarBody"></div>
+                </div>
+                <div class="timeline" id="timelineRight"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL PARA ADICIONAR CONSULTA -->
+    <div class="modal-overlay hidden" id="addConsultaModal">
+        <div class="modal-content">
+            <h2>Nova Consulta para <span id="addConsultaHora"></span></h2>
+            <form id="addConsultaForm">
+                <div class="form-group"> <label for="utenteNome">Nome do Utente</label> <input type="text" id="utenteNome" required> </div>
+                <div class="form-group"> <label for="tipoConsulta">Tipo</label> <select id="tipoConsulta"> <option value="Normal">Normal</option> <option value="Urgencia">Urgência</option> <option value="Planeamento Familiar">Planeamento Familiar</option> </select> </div>
+                <div class="form-group"> <label for="selectProfissional">Profissional</label> <select id="selectProfissional" required></select> </div>
+                <div class="modal-buttons"> <button type="button" class="btn-secondary" id="btnAddCancelar">Cancelar</button> <button type="submit" class="btn-primary">Guardar</button> </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL PARA VER/REMOVER CONSULTA -->
+    <div class="modal-overlay hidden" id="viewConsultaModal">
+        <div class="modal-content">
+            <h2>Detalhes da Consulta</h2>
+            <div class="info-group"> <span class="info-label">Utente:</span> <span class="info-value" id="viewUtente"></span> </div>
+            <div class="info-group"> <span class="info-label">Horário:</span> <span class="info-value" id="viewHora"></span> </div>
+            <div class="info-group"> <span class="info-label">Profissional:</span> <span class="info-value" id="viewProfissional"></span> </div>
+            <div class="info-group" id="viewAtrasoGroup"> <span class="info-label">Estado:</span> <span class="info-value atraso" id="viewAtraso"></span> </div>
+            <div class="modal-buttons"> <button type="button" class="btn-secondary" id="btnViewFechar">Fechar</button> <button type="button" class="btn-danger" id="btnRemover">Remover Consulta</button> </div>
+        </div>
+    </div>
+    
+    <!-- MODAL PARA ADICIONAR PROFISSIONAL -->
+    <div class="modal-overlay hidden" id="addStaffModal">
+        <div class="modal-content">
+            <h2>Adicionar Novo Profissional</h2>
+            <form id="addStaffForm">
+                <div class="form-group">
+                    <label for="staffName">Nome e Título</label>
+                    <input type="text" id="staffName" placeholder="Ex: Dr.ª Joana Neves" required>
+                </div>
+                <div class="form-group">
+                    <label>Disponibilidade</label>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="staffManha" name="turno" value="manha"> <label for="staffManha">Manhã</label>
+                        <input type="checkbox" id="staffTarde" name="turno" value="tarde"> <label for="staffTarde">Tarde</label>
+                    </div>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn-secondary" id="btnCancelStaff">Cancelar</button>
+                    <button type="submit" class="btn-primary">Adicionar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // --- CONFIGURAÇÕES E ESTADO DA APLICAÇÃO ---
+        const DURACAO_CONSULTA = 15;
+        let visibleHours = { inicio: 8, fim: 18 };
+        const hoje = new Date();
+        let dataParaNovaConsulta = null;
+        
+        // --- DADOS (INICIAIS) ---
+        const staff = {
+            manha: ["Dr. João Silva", "Dr.ª Rita Campos", "Dr. Ricardo Jorge", "Dr.ª Inês Martins", "Enf.ª Maria Costa", "Enf. Pedro Nunes"],
+            tarde: ["Dr. Miguel Antunes", "Dr.ª Ana Moreira", "Dr. Ricardo Jorge", "Dr.ª Inês Martins", "Enf. Carlos Reis", "Enf.ª Sofia Marques"]
+        };
+        let consultas = [
+             { id: 1, utente: "Manuel Gomes", tipo: "Normal", medico: "Dr. João Silva", atraso: 0, data: new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate(), 9, 0) },
+             { id: 2, utente: "Sofia Antunes", tipo: "Urgencia", medico: "Dr.ª Rita Campos", atraso: 25, data: new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate(), 9, 0) },
+             { id: 14, utente: "Tiago Nunes", tipo: "Urgencia", medico: "Dr.ª Inês Martins", atraso: 5, data: new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate(), 16, 45) },
+        ];
+        
+        // --- Referências DOM ---
+        const sidebarContent = document.getElementById('sidebarContent');
+        const calendarHeader = document.getElementById('calendarHeader');
+        const calendarBody = document.getElementById('calendarBody');
+        const btnDia = document.getElementById('btnDia');
+        const btnSemana = document.getElementById('btnSemana');
+        const addModal = document.getElementById('addConsultaModal');
+        const viewModal = document.getElementById('viewConsultaModal');
+        const addStaffModal = document.getElementById('addStaffModal');
+
+        // --- LÓGICA ---
+        function renderStaff() {
+            sidebarContent.innerHTML = `<h2>Equipa de Serviço</h2><h3>Manhã (08:00 - 13:00)</h3><ul>${staff.manha.map(p => `<li>${p}</li>`).join('')}</ul><h3>Tarde (13:00 - 18:00)</h3><ul>${staff.tarde.map(p => `<li>${p}</li>`).join('')}</ul>`;
+        }
+        
+        function calculateAndProcess(consultasDoDia) {
+            if (!consultasDoDia || consultasDoDia.length === 0) return [];
+            consultasDoDia.sort((a, b) => a.data - b.data);
+            const layoutCalculado = [];
+            let colisoes = [];
+            for (let i = 0; i < consultasDoDia.length; i++) {
+                let consultaAtual = consultasDoDia[i];
+                let colide = colisoes.length > 0 && new Date(colisoes[0].data.getTime() + DURACAO_CONSULTA * 60000) > consultaAtual.data;
+                if (colide) { colisoes.push(consultaAtual); }
+                else {
+                    if (colisoes.length > 0) { const largura = 100 / colisoes.length; colisoes.forEach((c, idx) => layoutCalculado.push({ ...c, layout: { esquerda: idx * largura, largura } })); }
+                    colisoes = [consultaAtual];
+                }
+            }
+            if (colisoes.length > 0) { const largura = 100 / colisoes.length; colisoes.forEach((c, idx) => layoutCalculado.push({ ...c, layout: { esquerda: idx * largura, largura } })); }
+            return layoutCalculado;
+        }
+
+        function renderConsultas(container, allConsultas) {
+            const filteredConsultas = allConsultas.filter(c => c.data.getHours() >= visibleHours.inicio && c.data.getHours() < visibleHours.fim);
+            const consultasProcessadas = calculateAndProcess(filteredConsultas);
+            const totalMinutosVisiveis = (visibleHours.fim - visibleHours.inicio) * 60;
+            consultasProcessadas.forEach(c => {
+                const el = document.createElement('div');
+                const hora = c.data.getHours(), minutos = c.data.getMinutes();
+                el.style.top = `${((hora - visibleHours.inicio) * 60 + minutos) / totalMinutosVisiveis * 100}%`;
+                el.style.height = `${(DURACAO_CONSULTA / totalMinutosVisiveis) * 100}%`;
+                el.style.left = `${c.layout.esquerda}%`;
+                el.style.width = `${c.layout.largura}%`;
+                el.className = `consulta consulta-${c.tipo.replace(' ', '-')} ${c.atraso > 0 ? 'com-atraso' : ''}`;
+                el.innerHTML = `<strong>${c.utente}</strong>${c.medico}`;
+                el.addEventListener('click', () => openViewModal(c.id));
+                container.appendChild(el);
+            });
+        }
+
+        function openAddModal(data) {
+            dataParaNovaConsulta = data;
+            addModal.classList.remove('hidden');
+            document.getElementById('addConsultaHora').innerText = data.toLocaleTimeString('pt-PT', {hour: '2-digit', minute:'2-digit'});
+            document.getElementById('addConsultaForm').reset();
+            updateProfissionalSelect();
+        }
+        
+        function openViewModal(id) {
+            const consulta = consultas.find(c => c.id === id);
+            if (!consulta) return;
+            document.getElementById('viewUtente').innerText = consulta.utente;
+            document.getElementById('viewHora').innerText = consulta.data.toLocaleTimeString('pt-PT', {hour: '2-digit', minute:'2-digit'});
+            document.getElementById('viewProfissional').innerText = consulta.medico;
+            const atrasoGroup = document.getElementById('viewAtrasoGroup');
+            if (consulta.atraso > 0) {
+                document.getElementById('viewAtraso').innerText = `Atraso de ${consulta.atraso} minutos`;
+                atrasoGroup.classList.remove('hidden');
+            } else { atrasoGroup.classList.add('hidden'); }
+            viewModal.classList.remove('hidden');
+            document.getElementById('btnRemover').dataset.id = id;
+        }
+
+        function closeModal() {
+            document.querySelectorAll('.modal-overlay').forEach(m => m.classList.add('hidden'));
+        }
+        
+        function updateProfissionalSelect() {
+            const hora = dataParaNovaConsulta.getHours();
+            const tipoConsulta = document.getElementById('tipoConsulta').value;
+            const select = document.getElementById('selectProfissional');
+            const turno = hora < 13 ? staff.manha : staff.tarde;
+            const profissionais = tipoConsulta === 'Planeamento Familiar' ? turno.filter(p => p.startsWith('Enf.')) : turno.filter(p => p.startsWith('Dr.'));
+            select.innerHTML = profissionais.length ? profissionais.map(p => `<option value="${p}">${p}</option>`).join('') : '<option disabled>Nenhum profissional disponível</option>';
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            consultas.push({ id: Date.now(), utente: document.getElementById('utenteNome').value, tipo: document.getElementById('tipoConsulta').value, medico: document.getElementById('selectProfissional').value, atraso: 0, data: dataParaNovaConsulta });
+            closeModal();
+            renderizarVistaAtual();
+        }
+
+        function removerConsulta(id) {
+            consultas = consultas.filter(c => c.id !== id);
+            closeModal();
+            renderizarVistaAtual();
+        }
+
+        function renderizarVistaAtual() { btnDia.classList.contains('active') ? renderDayView() : renderWeekView(); }
+        
+        function renderDayView() {
+            document.getElementById('dayViewToggle').style.display = 'flex';
+            updateActiveButton(btnDia, '.btn-group button');
+            calendarHeader.style.gridTemplateColumns = '1fr';
+            calendarHeader.innerHTML = `<div class="grid-header">${hoje.toLocaleDateString('pt-PT', { weekday: 'long' })}</div>`;
+            calendarBody.innerHTML = '';
+            calendarBody.appendChild(renderHourLines());
+            const col = document.createElement('div');
+            col.className = 'grid-day-column';
+            const btnAdd = document.createElement('button');
+            btnAdd.className = 'add-consulta-btn';
+            btnAdd.innerText = '+';
+            btnAdd.onclick = () => {
+                const data = new Date(hoje);
+                const horaPrompt = prompt("Hora para a nova consulta (HH:MM)?", "09:00");
+                if (horaPrompt && /^\d{1,2}:\d{2}$/.test(horaPrompt)) {
+                    const [h, m] = horaPrompt.split(':');
+                    data.setHours(h, m, 0, 0);
+                    openAddModal(data);
+                } else if (horaPrompt !== null) {
+                    alert("Formato de hora inválido. Por favor use HH:MM.");
+                }
+            };
+            col.appendChild(btnAdd);
+            calendarBody.appendChild(col);
+            const consultasHoje = consultas.filter(c => c.data.toDateString() === hoje.toDateString());
+            renderConsultas(col, consultasHoje);
+            renderTimelines();
+        }
+
+        function renderWeekView() {
+            document.getElementById('dayViewToggle').style.display = 'none';
+            visibleHours = { inicio: 8, fim: 18 };
+            updateActiveButton(btnSemana, '.btn-group button');
+            const dias = ["Seg", "Ter", "Qua", "Qui", "Sex"];
+            calendarHeader.style.gridTemplateColumns = 'repeat(5, 1fr)';
+            calendarBody.style.gridTemplateColumns = 'repeat(5, 1fr)';
+            calendarHeader.innerHTML = dias.map(d => `<div class="grid-header">${d}</div>`).join('');
+            calendarBody.innerHTML = '';
+            calendarBody.appendChild(renderHourLines());
+            const inicioSemana = new Date(hoje);
+            inicioSemana.setDate(hoje.getDate() - (hoje.getDay() === 0 ? 6 : hoje.getDay() - 1));
+            for (let i = 0; i < 5; i++) {
+                const diaAtual = new Date(inicioSemana);
+                diaAtual.setDate(inicioSemana.getDate() + i);
+                const col = document.createElement('div');
+                col.className = 'grid-day-column';
+                const btnAdd = document.createElement('button');
+                btnAdd.className = 'add-consulta-btn';
+                btnAdd.innerText = '+';
+                (function(d) {
+                    btnAdd.onclick = () => {
+                        const data = new Date(d);
+                        const horaPrompt = prompt("Hora para a nova consulta (HH:MM)?", "09:00");
+                         if (horaPrompt && /^\d{1,2}:\d{2}$/.test(horaPrompt)) {
+                            const [h, m] = horaPrompt.split(':');
+                            data.setHours(h, m, 0, 0);
+                            openAddModal(data);
+                        } else if (horaPrompt !== null) {
+                            alert("Formato de hora inválido. Por favor use HH:MM.");
+                        }
+                    };
+                })(diaAtual);
+                col.appendChild(btnAdd);
+                const consultasDia = consultas.filter(c => c.data.toDateString() === diaAtual.toDateString());
+                renderConsultas(col, consultasDia);
+                calendarBody.appendChild(col);
+            }
+            renderTimelines();
+        }
+        
+        function handleAddStaff(event) {
+            event.preventDefault();
+            const nomeInput = document.getElementById('staffName');
+            const nome = nomeInput.value.trim();
+            const isManha = document.getElementById('staffManha').checked;
+            const isTarde = document.getElementById('staffTarde').checked;
+            if (!nome || (!isManha && !isTarde)) { alert("Por favor, preencha o nome e selecione pelo menos um turno."); return; }
+            if (isManha) staff.manha.push(nome);
+            if (isTarde) staff.tarde.push(nome);
+            renderStaff();
+            closeModal();
+            document.getElementById('addStaffForm').reset();
+        }
+
+        function updateActiveButton(btn, selector) { document.querySelectorAll(selector).forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
+        function renderHourLines() { const c = document.createElement('div'); c.className = 'hour-lines-container'; for (let i=0; i < (visibleHours.fim - visibleHours.inicio); i++) { c.appendChild(document.createElement('div')).className = 'hour-line'; } return c; }
+        function renderTimelines() { const tl = document.getElementById('timelineLeft'), tr = document.getElementById('timelineRight'); tl.innerHTML = ''; tr.innerHTML = ''; for (let i = visibleHours.inicio; i <= visibleHours.fim; i++) { const m = document.createElement('div'); m.className = 'hour-marker'; m.innerText = `${i.toString().padStart(2, '0')}:00`; tl.appendChild(m.cloneNode(true)); tr.appendChild(m.cloneNode(true)); } }
+        
+        // --- Event Listeners ---
+        document.getElementById('btnManha').addEventListener('click', () => { visibleHours = { inicio: 8, fim: 13 }; updateActiveButton(document.getElementById('btnManha'), '#dayViewToggle button'); renderDayView(); });
+        document.getElementById('btnTarde').addEventListener('click', () => { visibleHours = { inicio: 13, fim: 18 }; updateActiveButton(document.getElementById('btnTarde'), '#dayViewToggle button'); renderDayView(); });
+        document.getElementById('btnDiaInteiro').addEventListener('click', () => { visibleHours = { inicio: 8, fim: 18 }; updateActiveButton(document.getElementById('btnDiaInteiro'), '#dayViewToggle button'); renderDayView(); });
+        btnDia.addEventListener('click', () => { visibleHours = { inicio: 8, fim: 18 }; updateActiveButton(document.getElementById('btnDiaInteiro'), '#dayViewToggle button'); renderDayView(); });
+        btnSemana.addEventListener('click', renderWeekView);
+        document.getElementById('btnHoje').addEventListener('click', () => { hoje.setTime(new Date().getTime()); renderDayView(); });
+        document.getElementById('tipoConsulta').addEventListener('change', updateProfissionalSelect);
+        document.getElementById('addConsultaForm').addEventListener('submit', handleFormSubmit);
+        document.getElementById('btnAddCancelar').addEventListener('click', closeModal);
+        document.getElementById('btnViewFechar').addEventListener('click', closeModal);
+        document.getElementById('btnRemover').addEventListener('click', (e) => { const id = parseInt(e.target.dataset.id); if (id) removerConsulta(id); });
+        document.getElementById('addStaffBtn').addEventListener('click', () => addStaffModal.classList.remove('hidden'));
+        document.getElementById('addStaffForm').addEventListener('submit', handleAddStaff);
+        document.getElementById('btnCancelStaff').addEventListener('click', closeModal);
+
+        // --- Inicialização ---
+        renderStaff();
+        renderDayView();
+    </script>
+</body>
+</html>
