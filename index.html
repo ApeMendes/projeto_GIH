@@ -6,7 +6,7 @@
     <title>Portal de Protótipos - Gestão Hospitalar</title>
     <style>
         :root {
-            --primary-color: #005eb8; /* Azul Hospitalar */
+            --primary-color: #005eb8;
             --secondary-color: #003d7a;
             --bg-color: #f4f7f6;
             --card-bg: #ffffff;
@@ -30,31 +30,22 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        header h1 {
-            margin: 0;
-            font-size: 2.2rem;
-            font-weight: 600;
-        }
-
-        header p {
-            margin-top: 10px;
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
+        header h1 { margin: 0; font-size: 2.2rem; font-weight: 600; }
+        header p { margin-top: 10px; font-size: 1.1rem; opacity: 0.9; }
 
         .container {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 40px auto;
             padding: 0 20px;
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 25px;
         }
 
-        /* Estilo dos Cartões */
+        /* Cartões */
         .card {
             background-color: var(--card-bg);
             border-radius: 12px;
@@ -65,6 +56,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            height: 100%;
         }
 
         .card:hover {
@@ -73,22 +65,20 @@
             border-color: var(--primary-color);
         }
 
-        .card-icon {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
+        .card-icon { font-size: 2.5rem; margin-bottom: 15px; }
+        
+        .card h2 { 
+            margin: 0 0 10px 0; 
+            font-size: 1.3rem; 
+            color: var(--secondary-color); 
         }
 
-        .card h2 {
-            margin: 0 0 10px 0;
-            font-size: 1.4rem;
-            color: var(--secondary-color);
-        }
-
-        .card p {
-            margin: 0 0 20px 0;
-            color: var(--text-light);
+        .card p { 
+            margin: 0 0 20px 0; 
+            color: var(--text-light); 
+            font-size: 0.95rem;
             line-height: 1.5;
-            flex-grow: 1;
+            flex-grow: 1; 
         }
 
         .meta-info {
@@ -106,14 +96,11 @@
             padding: 4px 8px;
             border-radius: 4px;
             font-weight: bold;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
         }
 
-        .tag.new {
-            background-color: #e8f5e9;
-            color: #2e7d32;
-        }
+        .tag.strat { background-color: #fff3e0; color: #e65100; } /* Laranja para Estratégia */
 
         .btn {
             display: block;
@@ -128,19 +115,7 @@
             transition: background-color 0.2s;
         }
 
-        .btn:hover {
-            background-color: var(--secondary-color);
-        }
-
-        .placeholder-card {
-            border: 2px dashed #ccc;
-            background-color: transparent;
-            color: #999;
-            align-items: center;
-            justify-content: center;
-            min-height: 250px;
-            text-align: center;
-        }
+        .btn:hover { background-color: var(--secondary-color); }
 
         footer {
             text-align: center;
@@ -149,57 +124,71 @@
             color: #999;
             font-size: 0.9rem;
         }
-
     </style>
 </head>
 <body>
 
     <header>
         <h1>Projeto GIH</h1>
-        <p>Gestão Integrada Hospitalar & Follow-up Clínico</p>
+        <p>Gestão Integrada Hospitalar & Otimização de Fluxo</p>
     </header>
 
     <div class="container">
         <div class="grid">
 
-            <!-- MOCKUP 1: DASHBOARD -->
+            <!-- 1. DASHBOARD -->
             <div class="card">
                 <div class="card-icon">📊</div>
                 <h2>Dashboard de Gestão</h2>
                 <div class="meta-info">
-                    <span class="tag">Admin</span>
-                    <span>Atualizado: Semana passada</span>
+                    <span class="tag">KPIs</span>
+                    <span>Admin View</span>
                 </div>
-                <p>Visão geral para gestores. Inclui KPIs de ocupação, tempos de espera e alertas de readmissão.</p>
-                <!-- O link deve corresponder exatamente ao nome do ficheiro no GitHub -->
+                <p>Visão macro do hospital. Métricas de ocupação, tempos de espera e alertas globais.</p>
                 <a href="Dashboard_Gestao.html" class="btn">Ver Dashboard</a>
             </div>
 
-            <!-- MOCKUP 2: SMS PACIENTE -->
+            <!-- 2. SMS PACIENTE -->
             <div class="card">
                 <div class="card-icon">📱</div>
-                <h2>Follow-up via SMS</h2>
+                <h2>Follow-up SMS</h2>
                 <div class="meta-info">
-                    <span class="tag new">Novo</span>
-                    <span>Foco: Eficácia Terapêutica</span>
+                    <span class="tag">Paciente</span>
+                    <span>Usabilidade</span>
                 </div>
-                <p>Interface do paciente. Simulação da triagem de eficácia da medicação (Melhor/Igual/Pior) via SMS simples.</p>
-                <!-- O link deve corresponder exatamente ao nome do ficheiro no GitHub -->
-                <a href="SMS_MockUp.html" class="btn">Ver Simulação SMS</a>
+                <p>Simulação da interface do paciente idoso respondendo à triagem de eficácia terapêutica.</p>
+                <a href="SMS_MockUp.html" class="btn">Ver SMS</a>
             </div>
 
-            <!-- MOCKUP FUTURO (PLACEHOLDER) -->
-            <div class="card placeholder-card">
-                <div style="font-size: 2rem; margin-bottom: 10px;">🔜</div>
-                <h3>Em Breve: Área do Médico</h3>
-                <p>Interface clínica para visualização das respostas dos pacientes.</p>
+            <!-- 3. TRIAGEM INTELIGENTE -->
+            <div class="card">
+                <div class="card-icon">🏥</div>
+                <h2>Triagem & Fluxo</h2>
+                <div class="meta-info">
+                    <span class="tag">Médico</span>
+                    <span>Check-in CC</span>
+                </div>
+                <p>Lista de trabalho baseada no Check-in do Cartão de Cidadão + Respostas do SMS. Separação Médico/Enfermeiro.</p>
+                <a href="Triagem_Inteligente.html" class="btn">Ver Triagem</a>
+            </div>
+
+            <!-- 4. VALUE STREAM MAP (NOVO) -->
+            <div class="card">
+                <div class="card-icon">🔄</div>
+                <h2>VSM - Processo</h2>
+                <div class="meta-info">
+                    <span class="tag strat">Estratégia</span>
+                    <span>Lean</span>
+                </div>
+                <p>Mapeamento da Cadeia de Valor. Comparação visual entre o processo atual (desperdício) e o futuro (fluxo).</p>
+                <a href="VSM.html" class="btn">Ver Mapeamento</a>
             </div>
 
         </div>
     </div>
 
     <footer>
-        <p>Protótipos para apresentação interna - Equipa de Gestão</p>
+        <p>Protótipos desenvolvidos para apresentação à Administração</p>
     </footer>
 
 </body>
