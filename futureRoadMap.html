@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future Roadmap DSRM - Hospitalar</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; padding: 40px; color: #333; display: flex; flex-direction: column; align-items: center; }
+        
+        h1 { color: #2c3e50; margin-bottom: 5px; }
+        .sub-header { color: #7f8c8d; font-size: 14px; margin-bottom: 40px; font-weight: 600; }
+        .tech-tag { background: #333; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px; }
+
+        /* Containers das Fases DSRM */
+        .phase-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            width: 600px;
+            position: relative;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 3px solid transparent; /* Base para as cores */
+        }
+
+        /* Cores das Fases (Design, Demo, Avaliação) */
+        .phase-design { border-color: #f1c40f; }
+        .phase-demo { border-color: #3498db; }
+        .phase-eval { border-color: #2ecc71; }
+
+        /* Labels Laterais */
+        .phase-label {
+            position: absolute;
+            right: -160px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 140px;
+            font-weight: bold;
+            font-size: 16px;
+            text-align: left;
+        }
+        .text-yellow { color: #f39c12; }
+        .text-blue { color: #3498db; }
+        .text-green { color: #27ae60; }
+
+        /* Steps (Caixas de Processo) */
+        .step-box {
+            background: #ecf0f1;
+            border: 1px solid #bdc3c7;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+            margin: 0 auto;
+            width: 80%;
+            transition: transform 0.2s;
+        }
+        .step-box:hover { transform: scale(1.02); background: #fff; border-color: #95a5a6; }
+
+        .step-number {
+            background: #2c3e50;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .step-title { font-weight: bold; color: #2c3e50; font-size: 14px; display: inline-block; vertical-align: middle; }
+        .step-desc { display: block; font-size: 12px; color: #7f8c8d; margin-top: 5px; }
+        .step-duration { 
+            display: block; 
+            font-size: 11px; 
+            color: #555; 
+            margin-top: 5px; 
+            font-weight: 600;
+            background: rgba(0,0,0,0.05);
+            padding: 2px 8px;
+            border-radius: 10px;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Arrows */
+        .arrow-down {
+            width: 0; 
+            height: 0; 
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 8px solid #95a5a6;
+            margin: 10px auto;
+        }
+        .connector { height: 15px; width: 2px; background: #bdc3c7; margin: 0 auto; }
+        
+        /* Ícones Tempo */
+        .icon-clock::before { content: '⏱ '; }
+
+    </style>
+</head>
+<body>
+
+    <h1>Future Roadmap no DSRM</h1>
+    <div class="sub-header">Otimização de Fluxos Hospitalares <span class="tech-tag">Python - Jupyter Lab</span></div>
+
+    <div class="phase-container phase-design">
+        <div class="phase-label text-yellow">Design e<br>Desenvolvimento</div>
+
+        <div class="step-box">
+            <div><span class="step-number">1</span><span class="step-title">Mapear processos atuais</span></div>
+            <span class="step-desc">Identificar fluxos e pontos críticos (Gargalos)</span>
+            <span class="step-duration icon-clock">Duração: 1 mês</span>
+        </div>
+
+        <div class="connector"></div><div class="arrow-down"></div>
+
+        <div class="step-box">
+            <div><span class="step-number">2</span><span class="step-title">Definir objetivos e KPIs</span></div>
+            <span class="step-desc">Reduzir burocracia e medir desempenho</span>
+            <span class="step-duration icon-clock">Duração: 2 semanas</span>
+        </div>
+
+        <div class="connector"></div><div class="arrow-down"></div>
+
+        <div class="step-box">
+            <div><span class="step-number">3</span><span class="step-title">Escolher a plataforma</span></div>
+            <span class="step-desc">Comercial ou customizada (Python/Web)</span>
+            <span class="step-duration icon-clock">Duração: 1 mês</span>
+        </div>
+
+        <div class="connector"></div><div class="arrow-down"></div>
+
+        <div class="step-box">
+            <div><span class="step-number">4</span><span class="step-title">Configurar funcionalidades</span></div>
+            <span class="step-desc">Chatbot SMS, receitas auto, dashboards, gestão tarefas</span>
+            <span class="step-duration icon-clock">Duração: 2 meses</span>
+        </div>
+
+        <div class="connector"></div><div class="arrow-down"></div>
+
+        <div class="step-box">
+            <div><span class="step-number">5</span><span class="step-title">Integrar sistemas existentes</span></div>
+            <span class="step-desc">SClínico, Laboratório, Farmácia, Segurança</span>
+            <span class="step-duration icon-clock">Duração: 1 mês</span>
+        </div>
+
+        <div class="connector"></div><div class="arrow-down"></div>
+
+        <div class="step-box">
+            <div><span class="step-number">6</span><span class="step-title">Treinar a equipa</span></div>
+            <span class="step-desc">Médicos (novos fluxos), Enfermeiros (triagem), Admin</span>
+            <span class="step-duration icon-clock">Duração: 3 semanas</span>
+        </div>
+    </div>
+
+    <div class="connector" style="height: 20px;"></div><div class="arrow-down"></div>
+
+    <div class="phase-container phase-demo">
+        <div class="phase-label text-blue">Demonstração</div>
+
+        <div class="step-box">
+            <div><span class="step-number">7</span><span class="step-title">Implementação gradual</span></div>
+            <span class="step-desc">Piloto (1 Unidade) → Ajustes → Rollout total</span>
+            <span class="step-duration icon-clock">Duração: 1 mês</span>
+        </div>
+    </div>
+
+    <div class="connector" style="height: 20px;"></div><div class="arrow-down"></div>
+
+    <div class="phase-container phase-eval">
+        <div class="phase-label text-green">Avaliação</div>
+
+        <div class="step-box">
+            <div><span class="step-number">8</span><span class="step-title">Monitorar e otimizar</span></div>
+            <span class="step-desc">Avaliar KPIs (Tempos, Nº Renovações Auto) e ajustar</span>
+            <span class="step-duration icon-clock">Contínuo</span>
+        </div>
+    </div>
+
+</body>
+</html>
