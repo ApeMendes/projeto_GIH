@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal de Protótipos - Gestão Hospitalar</title>
+    <title>Portal GIH - Protótipos</title>
     <style>
         :root {
-            --primary-color: #005eb8;
-            --secondary-color: #003d7a;
-            --bg-color: #f4f7f6;
+            --primary-color: #005eb8; /* Azul Hospitalar */
+            --secondary-color: #004080;
+            --bg-color: #f0f2f5;
             --card-bg: #ffffff;
             --text-main: #333;
             --text-light: #666;
@@ -27,80 +27,69 @@
             color: white;
             padding: 40px 20px;
             text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        header h1 { margin: 0; font-size: 2.2rem; font-weight: 600; }
+        header h1 { margin: 0; font-size: 2.2rem; font-weight: 700; }
         header p { margin-top: 10px; font-size: 1.1rem; opacity: 0.9; }
 
         .container {
-            max-width: 1100px;
-            margin: 40px auto;
+            max-width: 1000px;
+            margin: 50px auto;
             padding: 0 20px;
         }
 
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
+            gap: 30px;
         }
 
-        /* Cartões */
+        /* Estilo dos Cartões */
         .card {
             background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            border: 1px solid #e1e1e1;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            border: 1px solid rgba(0,0,0,0.05);
             height: 100%;
         }
 
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
             border-color: var(--primary-color);
         }
 
-        .card-icon { font-size: 2.5rem; margin-bottom: 15px; }
-        
+        .icon-container {
+            width: 60px;
+            height: 60px;
+            background-color: #e3f2fd;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
         .card h2 { 
             margin: 0 0 10px 0; 
-            font-size: 1.3rem; 
+            font-size: 1.4rem; 
             color: var(--secondary-color); 
         }
 
         .card p { 
-            margin: 0 0 20px 0; 
+            margin: 0 0 25px 0; 
             color: var(--text-light); 
-            font-size: 0.95rem;
-            line-height: 1.5;
+            line-height: 1.6;
             flex-grow: 1; 
         }
-
-        .meta-info {
-            font-size: 0.85rem;
-            color: #888;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .tag {
-            background-color: #e3f2fd;
-            color: var(--primary-color);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-        }
-
-        .tag.strat { background-color: #fff3e0; color: #e65100; } /* Laranja para Estratégia */
 
         .btn {
             display: block;
@@ -109,7 +98,7 @@
             background-color: var(--primary-color);
             color: white;
             text-decoration: none;
-            padding: 12px 0;
+            padding: 14px 0;
             border-radius: 8px;
             font-weight: 600;
             transition: background-color 0.2s;
@@ -119,9 +108,9 @@
 
         footer {
             text-align: center;
-            margin-top: 60px;
+            margin-top: 80px;
             padding: 20px;
-            color: #999;
+            color: #888;
             font-size: 0.9rem;
         }
     </style>
@@ -130,7 +119,7 @@
 
     <header>
         <h1>Projeto GIH</h1>
-        <p>Gestão Integrada Hospitalar & Otimização de Fluxo</p>
+        <p>Plataforma de Follow-up Médico & Gestão</p>
     </header>
 
     <div class="container">
@@ -138,57 +127,33 @@
 
             <!-- 1. DASHBOARD -->
             <div class="card">
-                <div class="card-icon">📊</div>
+                <div class="icon-container">📊</div>
                 <h2>Dashboard de Gestão</h2>
-                <div class="meta-info">
-                    <span class="tag">KPIs</span>
-                    <span>Admin View</span>
-                </div>
-                <p>Visão macro do hospital. Métricas de ocupação, tempos de espera e alertas globais.</p>
-                <a href="Dashboard_Gestao.html" class="btn">Ver Dashboard</a>
+                <p>Visão global do hospital. Monitorização de KPIs, taxas de ocupação e alertas de readmissão para os gestores.</p>
+                <a href="Dashboard_Gestao.html" class="btn">Abrir Dashboard</a>
             </div>
 
-            <!-- 2. SMS PACIENTE -->
+            <!-- 2. SMS MOCKUP -->
             <div class="card">
-                <div class="card-icon">📱</div>
-                <h2>Follow-up SMS</h2>
-                <div class="meta-info">
-                    <span class="tag">Paciente</span>
-                    <span>Usabilidade</span>
-                </div>
-                <p>Simulação da interface do paciente idoso respondendo à triagem de eficácia terapêutica.</p>
-                <a href="SMS_MockUp.html" class="btn">Ver SMS</a>
+                <div class="icon-container">📱</div>
+                <h2>Interface do Paciente</h2>
+                <p>Simulação do SMS interativo. Demonstração da facilidade de uso para idosos na monitorização da eficácia terapêutica.</p>
+                <a href="SMS_MockUp.html" class="btn">Ver Simulação SMS</a>
             </div>
 
-            <!-- 3. TRIAGEM INTELIGENTE -->
+            <!-- 3. VALUE STREAM MAP (VSM) -->
             <div class="card">
-                <div class="card-icon">🏥</div>
-                <h2>Triagem & Fluxo</h2>
-                <div class="meta-info">
-                    <span class="tag">Médico</span>
-                    <span>Check-in CC</span>
-                </div>
-                <p>Lista de trabalho baseada no Check-in do Cartão de Cidadão + Respostas do SMS. Separação Médico/Enfermeiro.</p>
-                <a href="Triagem_Inteligente.html" class="btn">Ver Triagem</a>
-            </div>
-
-            <!-- 4. VALUE STREAM MAP (NOVO) -->
-            <div class="card">
-                <div class="card-icon">🔄</div>
-                <h2>VSM - Processo</h2>
-                <div class="meta-info">
-                    <span class="tag strat">Estratégia</span>
-                    <span>Lean</span>
-                </div>
-                <p>Mapeamento da Cadeia de Valor. Comparação visual entre o processo atual (desperdício) e o futuro (fluxo).</p>
-                <a href="VSM.html" class="btn">Ver Mapeamento</a>
+                <div class="icon-container">🔄</div>
+                <h2>Processo (VSM)</h2>
+                <p>Mapeamento da Cadeia de Valor. Comparativo visual entre o processo atual (desperdício) e o novo fluxo otimizado.</p>
+                <a href="VSM.html" class="btn">Ver Mapa de Fluxo</a>
             </div>
 
         </div>
     </div>
 
     <footer>
-        <p>Protótipos desenvolvidos para apresentação à Administração</p>
+        <p>Protótipos - Apresentação Interna</p>
     </footer>
 
 </body>
