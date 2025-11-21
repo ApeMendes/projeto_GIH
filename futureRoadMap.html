@@ -3,182 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Future Roadmap DSRM - Hospitalar</title>
+    <title>Roadmap DSRM - Fluxo Contínuo</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; padding: 40px; color: #333; display: flex; flex-direction: column; align-items: center; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #fff; 
+            padding: 20px; 
+            color: #333; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        }
         
-        h1 { color: #2c3e50; margin-bottom: 5px; }
-        .sub-header { color: #7f8c8d; font-size: 14px; margin-bottom: 40px; font-weight: 600; }
-        .tech-tag { background: #333; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px; }
+        h1 { color: #2c3e50; margin: 0 0 5px 0; font-size: 24px; }
+        .sub-header { color: #7f8c8d; font-size: 14px; margin-bottom: 25px; font-weight: 600; }
+        .tech-tag { background: #333; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin-left: 10px; vertical-align: middle;}
 
-        /* Containers das Fases DSRM */
+        /* Contentores das Fases */
         .phase-container {
             background: white;
-            border-radius: 15px;
-            padding: 30px;
-            width: 600px;
+            border-radius: 10px;
+            padding: 15px;
+            width: 720px;
             position: relative;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border: 3px solid transparent; /* Base para as cores */
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border: 2px solid transparent; 
         }
 
-        /* Cores das Fases (Design, Demo, Avaliação) */
-        .phase-design { border-color: #f1c40f; }
-        .phase-demo { border-color: #3498db; }
-        .phase-eval { border-color: #2ecc71; }
+        .phase-design { border-color: #f1c40f; background: #fffdf0; }
+        .phase-demo { border-color: #3498db; background: #eff8ff; }
+        .phase-eval { border-color: #2ecc71; background: #f0fff4; }
 
         /* Labels Laterais */
         .phase-label {
             position: absolute;
-            right: -160px;
+            right: -140px;
             top: 50%;
             transform: translateY(-50%);
-            width: 140px;
+            width: 130px;
             font-weight: bold;
-            font-size: 16px;
+            font-size: 14px;
             text-align: left;
+            line-height: 1.2;
         }
         .text-yellow { color: #f39c12; }
         .text-blue { color: #3498db; }
         .text-green { color: #27ae60; }
 
-        /* Steps (Caixas de Processo) */
+        /* LAYOUT COLUNAS + SETAS */
+        .flow-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center; /* Alinha verticalmente */
+            position: relative;
+        }
+
+        .flow-column {
+            display: flex;
+            flex-direction: column;
+            width: 46%; /* Menos de 50 para caber setas */
+            gap: 5px;
+        }
+
+        /* SVG Seta Curva de Ligação (Ponte) */
+        .connector-bridge {
+            width: 40px;
+            height: 100px;
+            position: absolute;
+            left: 48%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #bdc3c7;
+        }
+
+        /* Steps (Caixas) */
         .step-box {
-            background: #ecf0f1;
+            background: #fff;
             border: 1px solid #bdc3c7;
-            border-radius: 8px;
-            padding: 15px;
+            border-radius: 6px;
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
             position: relative;
-            margin: 0 auto;
-            width: 80%;
-            transition: transform 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            min-height: 55px;
+            z-index: 2;
         }
-        .step-box:hover { transform: scale(1.02); background: #fff; border-color: #95a5a6; }
 
+        .step-header { display: flex; align-items: center; margin-bottom: 2px; }
+        
         .step-number {
             background: #2c3e50;
             color: white;
-            width: 20px;
-            height: 20px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 11px;
+            font-size: 9px;
             font-weight: bold;
-            margin-right: 8px;
-            vertical-align: middle;
+            margin-right: 6px;
         }
 
-        .step-title { font-weight: bold; color: #2c3e50; font-size: 14px; display: inline-block; vertical-align: middle; }
-        .step-desc { display: block; font-size: 12px; color: #7f8c8d; margin-top: 5px; }
-        .step-duration { 
-            display: block; 
-            font-size: 11px; 
-            color: #555; 
-            margin-top: 5px; 
-            font-weight: 600;
-            background: rgba(0,0,0,0.05);
-            padding: 2px 8px;
-            border-radius: 10px;
-            width: fit-content;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* Arrows */
-        .arrow-down {
-            width: 0; 
-            height: 0; 
-            border-left: 6px solid transparent;
-            border-right: 6px solid transparent;
-            border-top: 8px solid #95a5a6;
-            margin: 10px auto;
-        }
-        .connector { height: 15px; width: 2px; background: #bdc3c7; margin: 0 auto; }
+        .step-title { font-weight: bold; color: #2c3e50; font-size: 12px; }
+        .step-desc { font-size: 10px; color: #666; line-height: 1.1; margin-bottom: 3px; }
         
-        /* Ícones Tempo */
+        .step-duration { 
+            font-size: 9px; 
+            color: #555; 
+            font-weight: 600;
+            background: #eee;
+            padding: 1px 5px;
+            border-radius: 8px;
+            display: inline-block;
+        }
         .icon-clock::before { content: '⏱ '; }
+
+        /* Setas Verticais Pequenas */
+        .arrow-down {
+            color: #95a5a6;
+            font-size: 16px;
+            text-align: center;
+            margin: -2px 0; /* Aproximar */
+            line-height: 1;
+        }
+
+        /* Seta Grande entre Fases */
+        .phase-arrow {
+            color: #bdc3c7;
+            font-size: 20px;
+            margin: -10px 0;
+            text-align: center;
+            width: 100%;
+        }
 
     </style>
 </head>
 <body>
 
     <h1>Future Roadmap no DSRM</h1>
-    <div class="sub-header">Otimização de Fluxos Hospitalares </div>
+    <div class="sub-header">Otimização Hospitalar</div>
 
     <div class="phase-container phase-design">
         <div class="phase-label text-yellow">Design e<br>Desenvolvimento</div>
+        
+        <div class="flow-container">
+            
+            <div class="flow-column">
+                <div class="step-box">
+                    <div class="step-header"><span class="step-number">1</span><span class="step-title">Mapear Processos</span></div>
+                    <span class="step-desc">Identificar fluxos e gargalos</span>
+                    <span class="step-duration icon-clock">1 mês</span>
+                </div>
+                
+                <div class="arrow-down">↓</div>
 
-        <div class="step-box">
-            <div><span class="step-number">1</span><span class="step-title">Mapear processos atuais</span></div>
-            <span class="step-desc">Identificar fluxos e pontos críticos (Gargalos)</span>
-            <span class="step-duration icon-clock">Duração: 1 mês</span>
-        </div>
+                <div class="step-box">
+                    <div class="step-header"><span class="step-number">2</span><span class="step-title">Objetivos e KPIs</span></div>
+                    <span class="step-desc">Reduzir burocracia, medir tempos</span>
+                    <span class="step-duration icon-clock">2 semanas</span>
+                </div>
 
-        <div class="connector"></div><div class="arrow-down"></div>
+                <div class="arrow-down">↓</div>
 
-        <div class="step-box">
-            <div><span class="step-number">2</span><span class="step-title">Definir objetivos e KPIs</span></div>
-            <span class="step-desc">Reduzir burocracia e medir desempenho</span>
-            <span class="step-duration icon-clock">Duração: 2 semanas</span>
-        </div>
+                <div class="step-box">
+                    <div class="step-header"><span class="step-number">3</span><span class="step-title">Escolher Plataforma</span></div>
+                    <span class="step-desc">Solução Web/Python Customizada</span>
+                    <span class="step-duration icon-clock">1 mês</span>
+                </div>
+            </div>
 
-        <div class="connector"></div><div class="arrow-down"></div>
+            <div class="connector-bridge">
+                <svg width="60" height="150" viewBox="0 0 60 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 140 C 60 140, 0 10, 50 10" stroke="#bdc3c7" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                    <defs>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#bdc3c7" />
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
 
-        <div class="step-box">
-            <div><span class="step-number">3</span><span class="step-title">Escolher a plataforma</span></div>
-            <span class="step-desc">Comercial ou customizada (Python/Web)</span>
-            <span class="step-duration icon-clock">Duração: 1 mês</span>
-        </div>
+            <div class="flow-column">
+                <div class="step-box">
+                    <div class="step-header"><span class="step-number">4</span><span class="step-title">Configurar Funcionalidades</span></div>
+                    <span class="step-desc">Chatbot, receitas, dashboards</span>
+                    <span class="step-duration icon-clock">2 meses</span>
+                </div>
 
-        <div class="connector"></div><div class="arrow-down"></div>
+                <div class="arrow-down">↓</div>
 
-        <div class="step-box">
-            <div><span class="step-number">4</span><span class="step-title">Configurar funcionalidades</span></div>
-            <span class="step-desc">Chatbot SMS, receitas auto, dashboards, gestão tarefas</span>
-            <span class="step-duration icon-clock">Duração: 2 meses</span>
-        </div>
+                <div class="step-box">
+                    <div class="step-header"><span class="step-number">5</span><span class="step-title">Integração Sistemas</span></div>
+                    <span class="step-desc">SClínico, Lab, Farmácia</span>
+                    <span class="step-duration icon-clock">1 mês</span>
+                </div>
 
-        <div class="connector"></div><div class="arrow-down"></div>
+                <div class="arrow-down">↓</div>
 
-        <div class="step-box">
-            <div><span class="step-number">5</span><span class="step-title">Integrar sistemas existentes</span></div>
-            <span class="step-desc">SClínico, Laboratório, Farmácia, Segurança</span>
-            <span class="step-duration icon-clock">Duração: 1 mês</span>
-        </div>
+                <div class="step-box">
+                    <div class="step-header"><span class="step-number">6</span><span class="step-title">Treinar Equipa</span></div>
+                    <span class="step-desc">Médicos, Enfermagem e Admin</span>
+                    <span class="step-duration icon-clock">3 semanas</span>
+                </div>
+            </div>
 
-        <div class="connector"></div><div class="arrow-down"></div>
-
-        <div class="step-box">
-            <div><span class="step-number">6</span><span class="step-title">Treinar a equipa</span></div>
-            <span class="step-desc">Médicos (novos fluxos), Enfermeiros (triagem), Admin</span>
-            <span class="step-duration icon-clock">Duração: 3 semanas</span>
         </div>
     </div>
 
-    <div class="connector" style="height: 20px;"></div><div class="arrow-down"></div>
+    <div class="phase-arrow">↓</div>
 
     <div class="phase-container phase-demo">
         <div class="phase-label text-blue">Demonstração</div>
 
-        <div class="step-box">
-            <div><span class="step-number">7</span><span class="step-title">Implementação gradual</span></div>
-            <span class="step-desc">Piloto (1 Unidade) → Ajustes → Rollout total</span>
-            <span class="step-duration icon-clock">Duração: 1 mês</span>
+        <div class="step-box" style="flex-direction: row; justify-content: space-between; padding: 10px 20px;">
+            <div style="display:flex; align-items:center;">
+                <span class="step-number">7</span>
+                <div style="text-align:left;">
+                    <span class="step-title">Implementação Gradual</span><br>
+                    <span class="step-desc" style="margin:0;">Piloto (1 Unidade) → Ajustes → Rollout Total</span>
+                </div>
+            </div>
+            <span class="step-duration icon-clock">1 mês</span>
         </div>
     </div>
 
-    <div class="connector" style="height: 20px;"></div><div class="arrow-down"></div>
+    <div class="phase-arrow">↓</div>
 
     <div class="phase-container phase-eval">
         <div class="phase-label text-green">Avaliação</div>
 
-        <div class="step-box">
-            <div><span class="step-number">8</span><span class="step-title">Monitorar e otimizar</span></div>
-            <span class="step-desc">Avaliar KPIs (Tempos, Nº Renovações Auto) e ajustar</span>
+        <div class="step-box" style="flex-direction: row; justify-content: space-between; padding: 10px 20px;">
+            <div style="display:flex; align-items:center;">
+                <span class="step-number">8</span>
+                <div style="text-align:left;">
+                    <span class="step-title">Monitorizar e Otimizar</span><br>
+                    <span class="step-desc" style="margin:0;">Avaliar KPIs e ajustar processos ciclicamente</span>
+                </div>
+            </div>
             <span class="step-duration icon-clock">Contínuo</span>
         </div>
     </div>
