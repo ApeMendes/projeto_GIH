@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital VSM - Foco no Tempo Médico</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; padding: 20px; color: #333; }
+        h1, h2 { text-align: center; color: #2c3e50; }
+        
+        /* Tabs */
+        .tabs { display: flex; justify-content: center; margin-bottom: 20px; }
+        .tab-btn { background: #cbd5e0; border: none; padding: 12px 25px; cursor: pointer; font-size: 16px; margin: 0 5px; border-radius: 5px 5px 0 0; font-weight: 600; color: #4a5568; }
+        .tab-btn.active { background: #c0392b; color: white; } /* Vermelho para urgência da mudança */
+        
+        /* Containers */
+        .vsm-container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: none; overflow-x: auto; min-height: 500px; }
+        .vsm-container.active { display: block; }
+
+        /* Rows */
+        .flow-row { display: flex; align-items: flex-start; justify-content: flex-start; margin-bottom: 40px; min-width: 1000px; padding-top: 20px; }
+        
+        /* Swimlanes for Future State */
+        .swimlane { display: flex; border: 1px solid #e2e8f0; margin-bottom: 15px; border-radius: 8px; overflow: hidden; }
+        .swimlane-header { width: 150px; background: #edf2f7; padding: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; border-right: 1px solid #e2e8f0; text-align: center; font-size: 13px; }
+        .swimlane-content { flex-grow: 1; padding: 20px; display: flex; align-items: center; background: #fff; }
+
+        /* Boxes */
+        .box {
+            width: 170px; padding: 12px; background: #fff; border: 2px solid #a0aec0; border-radius: 8px; 
+            text-align: center; position: relative; margin-right: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); z-index: 2;
+        }
+        .box h3 { font-size: 13px; margin: 0 0 8px 0; text-transform: uppercase; color: #4a5568; font-weight: 800; }
+        .box .time { display: block; font-weight: bold; font-size: 14px; margin-bottom: 5px; color: #2d3748; }
+        .box .desc { font-size: 11px; color: #718096; line-height: 1.3; display: block; }
+        
+        /* Special Box: The Doctor Split */
+        .split-bar { display: flex; height: 25px; width: 100%; margin-bottom: 8px; border-radius: 4px; overflow: hidden; border: 1px solid #ccc; }
+        .bar-value { background: #68d391; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #004d40; font-weight: bold; }
+        .bar-waste { background: #fc8181; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #621b16; font-weight: bold; }
+
+        /* Box Types */
+        .box.waste { border-color: #fc8181; background: #fff5f5; }
+        .box.value { border-color: #68d391; background: #f0fff4; }
+        .box.auto { border-color: #63b3ed; background: #ebf8ff; }
+        .box.bottleneck { border-color: #c0392b; background: #fff; border-width: 3px; }
+
+        /* Arrows & Waits */
+        .arrow { flex-grow: 1; height: 2px; background: #cbd5e0; position: relative; min-width: 30px; margin: 30px 10px 0; }
+        .arrow::after { content: '►'; position: absolute; right: -6px; top: -7px; color: #cbd5e0; font-size: 12px; }
+        .wait { position: absolute; top: -20px; width: 100%; text-align: center; font-size: 11px; color: #e53e3e; font-weight: bold; }
+
+        /* Legend */
+        .legend { margin-top: 30px; border-top: 1px solid #eee; padding-top: 10px; display: flex; gap: 20px; font-size: 12px; color: #666; }
+        .dot { height: 10px; width: 10px; display: inline-block; border-radius: 50%; margin-right: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>VSM: Otimização do Tempo Médico</h1>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('current')">Estado Atual (Médico = Secretário)</button>
+        <button class="tab-btn" onclick="openTab('future')">Estado Futuro (Médico = Clínico)</button>
+    </div>
+
+    <div id="current" class="vsm-container active">
+        <h2>Processo Atual: A "Dor" do Médico e do Doente</h2>
+        <p style="text-align:center; font-style:italic; margin-bottom:30px; color: #555;">
+            O médico está sobrecarregado. A consulta de 15 min é consumida por impressão de papel e introdução de dados.
+        </p>
+
+        <div class="flow-row">
+            <div class="box waste">
+                <h3>Chegada Centro</h3>
+                <span class="time">Fila Entrada</span>
+                <span class="desc">Mistura de casos (agudos + papéis)</span>
+            </div>
+
+            <div class="arrow"><span class="wait">Espera: 20 min</span></div>
+
+            <div class="box waste">
+                <h3>Check-in Balcão</h3>
+                <span class="time">Manual</span>
+                <span class="desc">Validação presencial</span>
+            </div>
+
+            <div class="arrow"><span class="wait">Espera: 30-60 min</span></div>
+
+            <div class="box bottleneck" style="width: 220px;">
+                <h3 style="color:#c0392b;">Consulta Médica (15m)</h3>
+                
+                <div class="split-bar">
+                    <div class="bar-value" style="width: 50%">Clínica (7m)</div>
+                    <div class="bar-waste" style="width: 50%">Burocracia (8m)</div>
+                </div>
+                
+                <ul style="text-align:left; font-size:10px; padding-left:15px; margin:5px 0; color:#c0392b;">
+                    <li>Imprimir Receitas</li>
+                    <li>Preencher SClínico</li>
+                    <li>Passar Baixas (Mão/PC)</li>
+                    <li>Agendar Exames</li>
+                </ul>
+                <span class="desc" style="font-weight:bold;">Médico faz secretariado</span>
+            </div>
+
+            <div class="arrow"><span class="wait">Atraso em Cascata</span></div>
+
+            <div class="box waste">
+                <h3>Saída do Gabinete</h3>
+                <span class="desc">Doente sai com papéis na mão.</span>
+            </div>
+        </div>
+
+        <div style="background:#fff5f5; padding:15px; border-left:4px solid #c0392b; margin-top:20px;">
+            <strong>Análise de Desperdício:</strong> Por aqui as nossas continhas
+        </div>
+    </div>
+
+    <div id="future" class="vsm-container">
+        <h2>Processo Melhorado: Separação de Competências</h2>
+        
+        <div class="swimlane">
+            <div class="swimlane-header" style="background:#ebf8ff; color:#2b6cb0;">VIA 1:<br>Renovação Auto</div>
+            <div class="swimlane-content">
+                <div class="box auto">
+                    <h3>Monitorização</h3>
+                    <span class="desc">Contagem de Comprimidos</span>
+                </div>
+                <div class="arrow"><span class="wait">10 dias antes</span></div>
+                <div class="box auto">
+                    <h3>SMS Automático</h3>
+                    <span class="desc">Doente confirma c/ "SIM"</span>
+                </div>
+                <div class="arrow"></div>
+                <div class="box value">
+                    <h3>Receita SMS/App SNS24</h3>
+                    <span class="time">Instantâneo</span>
+                </div>
+                <span style="margin-left:10px; font-weight:bold; color:green; font-size:12px;">NÃO ENTRA NO CENTRO</span>
+            </div>
+        </div>
+
+        <div class="swimlane">
+            <div class="swimlane-header" style="background:#f0fff4; color:#2f855a;">VIA 2:<br>Rotina Enf.</div>
+            <div class="swimlane-content">
+                <div class="box value">
+                    <h3>Check-in USCP</h3>
+                    <span class="time">1 min</span>
+                </div>
+                <div class="arrow"><span class="wait">Rápido</span></div>
+                <div class="box value">
+                    <h3>Consulta Enfermagem</h3>
+                    <span class="time">20 min</span>
+                    <span class="desc">Monitorização de Crónicos</span>
+                </div>
+                <div class="arrow"></div>
+                <div class="box auto">
+                    <h3>Registo Digital</h3>
+                    <span class="desc">Dados integrados no sistema</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="swimlane">
+            <div class="swimlane-header" style="background:#fffaf0; color:#c05621;">VIA 3:<br>Consulta Aguda</div>
+            <div class="swimlane-content">
+                <div class="box value">
+                    <h3>Check-in USCP</h3>
+                    <span class="time">1 min</span>
+                </div>
+                
+                <div class="arrow"><span class="wait">Espera Curta</span></div>
+
+                <div class="box value" style="width: 220px; border-color:#27ae60;">
+                    <h3 style="color:#27ae60;">Consulta Médica (15m)</h3>
+                    
+                    <div class="split-bar">
+                        <div class="bar-value" style="width: 100%">Clínica (15m)</div>
+                    </div>
+                    
+                    <span class="desc" style="margin-top:5px;">• Exame Físico<br>• Diagnóstico<br>• Decisão Terapêutica</span>
+                </div>
+
+                <div class="arrow"></div>
+
+                <div class="box auto">
+                    <h3>Pós-Consulta Auto</h3>
+                    <span class="desc">Receita enviada p/ App SNS24<br>Baixa enviada p/ Mail Direta</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="legend">
+            <div><span class="dot" style="background:#fc8181;"></span>Burocracia (Médico a escrever)</div>
+            <div><span class="dot" style="background:#68d391;"></span>Valor Clínico (Médico a examinar)</div>
+        </div>
+    </div>
+
+    <script>
+        function openTab(tabName) {
+            var i, x, tablinks;
+            x = document.getElementsByClassName("vsm-container");
+            for (i = 0; i < x.length; i++) {
+                x[i].classList.remove("active");
+            }
+            document.getElementById(tabName).classList.add("active");
+            
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            event.currentTarget.classList.add("active");
+        }
+    </script>
+</body>
+</html>
