@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mockup SMS - Eficácia Tratamento</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #eef2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Phone Container */
+        .phone-frame {
+            width: 375px;
+            height: 740px;
+            background-color: #fff;
+            border-radius: 45px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+            border: 10px solid #222;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Notch/Camera */
+        .notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 160px;
+            height: 28px;
+            background-color: #222;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            z-index: 10;
+        }
+
+        /* Header */
+        .header {
+            background-color: #f2f2f7; /* iOS Gray */
+            padding: 45px 20px 15px 20px;
+            border-bottom: 1px solid #c6c6c8;
+            display: flex;
+            align-items: center;
+            z-index: 5;
+            backdrop-filter: blur(10px);
+        }
+
+        .back-arrow {
+            color: #007AFF;
+            font-size: 28px;
+            margin-right: 10px;
+            cursor: pointer;
+            font-weight: 300;
+        }
+
+        .avatar {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #34c759, #30b04f); /* Verde Saúde */
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 12px;
+            font-size: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .contact-name {
+            font-weight: 600;
+            font-size: 17px;
+            color: #000;
+        }
+
+        .contact-status {
+            font-size: 13px;
+            color: #666;
+        }
+
+        /* Messages Area */
+        .message-area {
+            flex: 1;
+            background-color: #fff;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .timestamp {
+            text-align: center;
+            color: #8e8e93;
+            font-size: 12px;
+            font-weight: 500;
+            margin: 5px 0;
+        }
+
+        /* Message Bubbles */
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 22px;
+            font-size: 17px; /* Tamanho maior para idosos */
+            line-height: 1.4;
+            position: relative;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        /* Received (Hospital) */
+        .received {
+            background-color: #e9e9eb;
+            color: #000;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        /* Sent (Patient) */
+        .sent {
+            background-color: #007AFF;
+            color: #fff;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        /* Input Area */
+        .input-area {
+            padding: 12px 15px;
+            background-color: #f2f2f7;
+            border-top: 1px solid #c6c6c8;
+            display: flex;
+            align-items: center;
+            padding-bottom: 25px; /* Simulate bottom safe area */
+        }
+
+        .camera-icon {
+            color: #8e8e93;
+            font-size: 24px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .text-input {
+            flex: 1;
+            border: 1px solid #d1d1d6;
+            border-radius: 20px;
+            padding: 9px 15px;
+            font-size: 17px;
+            outline: none;
+            background: white;
+            color: #aaa;
+        }
+
+        .send-btn {
+            margin-left: 12px;
+            background-color: #007AFF;
+            color: white;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        /* Highlight helpers */
+        .highlight {
+            font-weight: 700;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="phone-frame">
+        <div class="notch"></div>
+        
+        <!-- Header -->
+        <div class="header">
+            <div class="back-arrow">‹</div>
+            <div class="avatar">HC</div>
+            <div class="contact-info">
+                <span class="contact-name">Hospital Central</span>
+                <span class="contact-status">Seguimento Clínico</span>
+            </div>
+        </div>
+
+        <!-- Messages -->
+        <div class="message-area">
+            <div class="timestamp">Terça-feira 14:00</div>
+
+            <!-- Mensagem 1: Contexto da Mudança de Medicação -->
+            <div class="message received">
+                Olá D. Maria. Iniciou o <b>novo comprimido</b> para o coração há 3 dias. Queremos saber como está a reagir.
+            </div>
+
+            <!-- Mensagem 2: A Pergunta de Eficácia (Comparativa) -->
+            <div class="message received">
+                Comparado com a semana passada, sente-se <b>mais ou menos cansada</b>?<br><br>
+                Responda o número:<br>
+                1 - Sinto-me MELHOR<br>
+                2 - Sinto-me IGUAL<br>
+                3 - Sinto-me PIOR
+            </div>
+
+            <div class="timestamp">Terça-feira 14:15</div>
+
+            <!-- Resposta Paciente -->
+            <div class="message sent">
+                1
+            </div>
+
+            <!-- Mensagem 3: Reforço Positivo e Instrução -->
+            <div class="message received">
+                Boa notícia! Isso significa que o tratamento está a resultar.<br><br>
+                Continue a tomar a dose atual. Voltamos a falar na Sexta-feira.
+            </div>
+
+            <div class="timestamp">Lida hoje</div>
+        </div>
+
+        <!-- Input -->
+        <div class="input-area">
+            <div class="camera-icon">📷</div>
+            <div class="text-input">Mensagem SMS</div>
+            <div class="send-btn">↑</div>
+        </div>
+    </div>
+
+</body>
+</html>
